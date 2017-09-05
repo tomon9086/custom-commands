@@ -1,0 +1,30 @@
+#!/bin/bash
+
+now=`curl 'https://ntp-a1.nict.go.jp/cgi-bin/time'`
+t=`echo ${now} | grep -o '[0-9][0-9]:[0-9][0-9]:[0-9][0-9]'`
+months=('Jan' 'Feb' 'Mar' 'Apr' 'May' 'Jun' 'Jul' 'Aug' 'Sep' 'Oct' 'Nov' 'Dec')
+m=''
+i=1
+for v in ${months[@]}
+do
+        if [ `echo ${now} | grep -o ${v}` ]; then
+                if [ $(( i / 10 )) -eq 1 ]; then
+                        m=${i}
+                else
+                        m=0${i}
+                fi
+        fi
+        i=$(( i + 1 ))
+done
+d=`echo ${now} | grep -o ' [0-9][0-9] ' | grep -o '[0-9][0-9]'`
+y=`echo ${now} | grep -o '[0-9][0-9][0-9][0-9]'`
+settime=`echo ${y}/${m}/${d} ${t}`
+
+sudo date --set="${settime}"
+
+if [ `echo $?` = '0' ]; then
+        echo 'Done✨'
+else
+        echo "exit code: ${$?}"
+fi
+
