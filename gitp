@@ -54,12 +54,19 @@ elif [ -z $status ]; then
 	if [ ! -d "$HOME/.custom-commands/tmp" ]; then
 		mkdir "$HOME/.custom-commands/tmp"
 	fi
-	git push 2> $HOME/.custom-commands/tmp/gitp_error
-	if [ $? -eq 128 ]; then
-	    retry_cmd=`cat $HOME/.custom-commands/tmp/gitp_error | grep 'git push --set-upstream origin'`
-	    eval "${retry_cmd}"
-	fi
-	rm $HOME/.custom-commands/tmp/gitp_error
+	# { git push 3>&2 2>&1 1>&3 | tee "$HOME/.custom-commands/tmp/gitp_error"; } 3>&2 2>&1 1>&3
+	{ { git push 1>&3; } 2>&1 | tee "$HOME/.custom-commands/tmp/gitp_error" 1>&2; } 3>&1
+	retry_cmd=`cat "$HOME/.custom-commands/tmp/gitp_error" | grep 'git push --set-upstream origin'`
+	# retry_cmd=`echo ${retry_cmd} | tr -d " "`
+	retry_cmd=`echo ${retry_cmd} | sed -e "/^ /d"`
+	eval "${retry_cmd}"
+	# if [ -n ${retry_cmd} ]; then
+	# 	showstatus retrying...
+	# 	eval "${retry_cmd}"
+	# fi
+	rm "$HOME/.custom-commands/tmp/gitp_error"
+	echo ''
+	echo '✨ Done'
 	exit 0
 fi
 
