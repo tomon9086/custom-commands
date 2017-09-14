@@ -51,7 +51,15 @@ elif [ -z $status ]; then
 	showstatus committing...
 	git commit -m "${commit_message}"
 	showstatus pushing...
-	git push
+	if [ ! -d "$HOME/.custom-commands/tmp" ]; then
+		mkdir "$HOME/.custom-commands/tmp"
+	fi
+	git push 2> $HOME/.custom-commands/tmp/gitp_error
+	if [ $? -eq 128 ]; then
+	    retry_cmd=`cat $HOME/.custom-commands/tmp/gitp_error | grep 'git push --set-upstream origin'`
+	    eval "${retry_cmd}"
+	fi
+	rm $HOME/.custom-commands/tmp/gitp_error
 	exit 0
 fi
 
