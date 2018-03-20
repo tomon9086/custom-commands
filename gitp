@@ -1,8 +1,9 @@
 #!/bin/bash
 
 gethelp() {
-	echo "usage: gitp [<commit message>][-f <ssh address>] [-h]"
+	echo "usage: gitp [[-n] <commit message>][-f <ssh address>] [-h]"
 	echo "	no arguments to pull"
+	echo "	-n: no push (offline option)"
 	echo "	-f: first commit"
 	echo "	-h: help"
 }
@@ -11,9 +12,11 @@ showstatus() {
 	echo -e "\033[02;37m$1\033[0;39m"
 }
 
-while getopts f:h:s OPT
+while getopts n:f:h:s OPT
 do
 	case $OPT in
+		n)	status="no_push"
+			;;
 		f)	status="first_commit"
 			address=$OPTARG
 			# echo $address
@@ -33,7 +36,7 @@ do
 			showstatus error
 			gethelp
 			exit 0
-		        ;;
+			;;
 	esac
 done
 
@@ -42,6 +45,12 @@ if [ $# -eq 0 ]; then
 	# exit 1
 	showstatus pulling...
         git pull
+	exit 0
+elif test $status = "no_push"; then
+	commit_message=${@:2:($#-1)}
+	git add -A
+	showstatus committing...
+	git commit -m "${commit_message}"
 	exit 0
 elif [ -z $status ]; then
 	commit_message=$*
