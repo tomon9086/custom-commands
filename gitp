@@ -47,7 +47,6 @@ if [ $# -eq 0 ]; then
         git pull
 	exit 0
 elif [ "$status" = "no_push" ]; then
-	# no_pushのてすと
 	commit_message=${@:2:($#-1)}
 	git add -A
 	showstatus committing...
