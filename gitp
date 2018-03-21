@@ -46,7 +46,7 @@ if [ $# -eq 0 ]; then
 	showstatus pulling...
         git pull
 	exit 0
-elif test $status="no_push"; then
+elif [ $status = "no_push" ]; then
 	commit_message=${@:2:($#-1)}
 	git add -A
 	showstatus committing...
