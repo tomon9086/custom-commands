@@ -40,6 +40,14 @@ do
 	esac
 done
 
+ismaster=`git branch --contains=HEAD | grep master`
+if [ -n "$ismaster" ]; then
+	echo "Warning: It looks like you are committing to master branch."
+	echo "Are you sure? [y/n]"
+	read answer
+	case "$answer" in [yY]*) ;; *) echo "abort." ; exit 1 ;; esac
+fi
+
 if [ $# -eq 0 ]; then
 	# gethelp
 	# exit 1
