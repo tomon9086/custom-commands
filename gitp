@@ -12,6 +12,18 @@ showstatus() {
 	echo -e "\033[02;37m$1\033[0;39m"
 }
 
+gitcommit() {
+	ismaster=`git branch --contains=HEAD | grep master`
+	if [ -n "$ismaster" ]; then
+		echo "Warning: It looks like you are committing to master branch."
+		echo "Are you sure? [y/n]"
+		read answer
+		case "$answer" in [yY]*) ;; *) echo "abort." ; exit 1 ;; esac
+	fi
+	git add -A
+	git commit -m "$1"
+}
+
 while getopts n:f:h:s OPT
 do
 	case $OPT in
@@ -40,33 +52,23 @@ do
 	esac
 done
 
-ismaster=`git branch --contains=HEAD | grep master`
-if [ -n "$ismaster" ]; then
-	echo "Warning: It looks like you are committing to master branch."
-	echo "Are you sure? [y/n]"
-	read answer
-	case "$answer" in [yY]*) ;; *) echo "abort." ; exit 1 ;; esac
-fi
-
 if [ $# -eq 0 ]; then
 	# gethelp
 	# exit 1
 	showstatus pulling...
-        git pull
+	git pull
 	exit 0
 elif [ "$status" = "no_push" ]; then
 	commit_message=${@:2:($#-1)}
-	git add -A
 	showstatus committing...
-	git commit -m "${commit_message}"
+	gitcommit "${commit_message}"
 	exit 0
 elif [ -z $status ]; then
 	commit_message=$*
 	showstatus pulling...
 	git pull
-	git add -A
 	showstatus committing...
-	git commit -m "${commit_message}"
+	gitcommit "${commit_message}"
 	showstatus pushing...
 	if [ ! -d "$HOME/.custom-commands/tmp" ]; then
 		mkdir "$HOME/.custom-commands/tmp"
@@ -89,8 +91,7 @@ fi
 
 if [ -n $address ]; then
 	git init
-	git add -A
-	git commit -m "first commit"
+	gitcommit "first commit"
 	git remote add origin $address
 	git push -u origin master
 	exit 0
