@@ -14,7 +14,7 @@ showstatus() {
 
 gitcommit() {
 	ismaster=`git branch --contains=HEAD | grep master`
-	if [ -n "$ismaster" ]; then
+	if [ -n "${ismaster}" ]; then
 		echo "Warning: It looks like you are committing to master branch."
 		echo "Are you sure? [y/n]"
 		read answer
