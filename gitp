@@ -20,7 +20,8 @@ gitcommit() {
 		read answer
 		case "$answer" in [yY]*) ;; *) echo "abort." ; exit 1 ;; esac
 	fi
-	exist_gitignore=`ls -a | grep .gitignore`
+	git_root_path=`git rev-parse --show-toplevel`
+	exist_gitignore=`ls -a "${git_root_path}" | grep .gitignore`
 	if [ -z "${exist_gitignore}" ]; then
 		echo "Warning: It looks like \".gitignore\" does not exist."
 		echo "Are you sure? [y/n]"
