@@ -33,15 +33,21 @@ gitcommit() {
 }
 
 makeGitFiles() {
+	reponame=''
 	notgitrepo=`git status 2>&1 | grep 'not a git repository'`
 	if [ -n "${notgitrepo}" ]; then
 		echo "Warning: It looks like this is not a git repository yet."
 		echo "Create git files? [y/n]"
 		read answer
 		case "$answer" in [yY]*) ;; *) echo "abort." ; exit 1 ;; esac
+	else
+		currentpath=`pwd`
+		reponame=`basename "${currentpath}"`
 	fi
 	if [ -z `ls -a | grep --ignore-case readme` ]; then
 		touch readme.md
+		echo "# ${reponame}" > readme.md
+		echo '' >> readme.md
 		showstatus "create: readme.md"
 	fi
 	if [ -z `ls -a | grep --ignore-case .gitignore` ]; then
