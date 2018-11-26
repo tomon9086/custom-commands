@@ -3,9 +3,11 @@
 gethelp() {
 	echo "usage: gitp [[-n] <commit message>][-f <ssh address>] [-h]"
 	echo "	no arguments to pull"
-	echo "	-n: no push (offline option)"
 	echo "	-f: first commit"
 	echo "	-h: help"
+	echo "	-m: make git dotfiles"
+	echo "	-n: no push (offline option)"
+	echo "	-s: get status"
 }
 
 showstatus() {
@@ -60,7 +62,7 @@ makeGitFiles() {
 	fi
 }
 
-while getopts n:f:h:s:m OPT
+while getopts nf:hsm OPT
 do
 	case $OPT in
 		n)	status="no_push"
@@ -85,6 +87,7 @@ do
 			exit 0
 			;;
 		\?) status="unexpected_option"
+			echo "$OPTARG"
 			showstatus error
 			gethelp
 			exit 0
