@@ -30,6 +30,15 @@ gitcommit() {
 		read answer
 		case "$answer" in [yY]*) ;; *) echo "abort." ; exit 1 ;; esac
 	fi
+	filesOver99MB=`find . -size +99M`
+	if [ -n "${filesOver99MB}" ]; then
+		filesOver99MB=`echo ${filesOver99MB} | sed -e s/^/'	'/g`
+		echo "Warning: It looks like you are committing files over 99MB. See below..."
+		echo "${filesOver99MB}"
+		echo "Are you sure? [y/n]"
+		read answer
+		case "$answer" in [yY]*) ;; *) echo "abort." ; exit 1 ;; esac
+	fi
 	git add -A
 	git commit -m "$1"
 }
