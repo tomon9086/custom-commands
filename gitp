@@ -24,6 +24,9 @@ gitcommit() {
 	fi
 	git_root_path=`git rev-parse --show-toplevel`
 	exist_gitignore=`ls -a "${git_root_path}" | grep .gitignore`
+	if [ -z "${git_root_path}" ]; then
+		exist_gitignore=`ls -a | grep .gitignore`
+	fi
 	if [ -z "${exist_gitignore}" ]; then
 		echo "Warning: It looks like \".gitignore\" does not exist."
 		echo "Are you sure? [y/n]"
