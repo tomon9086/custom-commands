@@ -71,7 +71,17 @@ makeGitFiles() {
 	fi
 }
 
-while getopts nf:hsm OPT
+setUpstream() {
+	if [ $# -ne 2 ]; then
+		showstatus 'error: expected 2 arguments'
+		exit 1
+	fi
+	branch=`git branch --contains=HEAD --format='%(refname:short)'`
+	git branch --set-upstream-to="$1/$2" "$branch"
+	# showstatus "${branch}'s upstream set to $1/$2"
+}
+
+while getopts nf:hsmu OPT
 do
 	case $OPT in
 		n)	status="no_push"
@@ -95,8 +105,12 @@ do
 			makeGitFiles
 			exit 0
 			;;
+		u)	status="set_upstream"
+			setUpstream ${@:2:($#-1)}
+			exit 0
+			;;
 		\?) status="unexpected_option"
-			echo "$OPTARG"
+			# echo "$OPTARG"
 			showstatus error
 			gethelp
 			exit 0
