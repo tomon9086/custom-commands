@@ -1,9 +1,10 @@
 #!/bin/bash
 
 gethelp() {
-	echo "usage: gitp [[-n] <commit message>][-f <ssh address>] [-h]"
+	echo "usage: gitp [-f <ssh address>][-u <remote> <remote branch>][[-n] <commit message>] [-h]"
 	echo "	no arguments to pull"
 	echo "	-f: first commit"
+	echo "	-u: set upstream"
 	echo "	-h: help"
 	echo "	-m: make git dotfiles"
 	echo "	-n: no push (offline option)"
