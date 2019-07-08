@@ -27,7 +27,7 @@ gitpull() {
 	git pull
 	exit_status=$?
 	if [ $exit_status -ne 0 ]; then
-		showerror 'failed to pull'
+		showerror '😕 failed to pull'
 		exit $exit_status
 	fi
 }
@@ -64,7 +64,7 @@ gitcommit() {
 	git commit -m "$1"
 	exit_status=$?
 	if [ $exit_status -ne 0 ]; then
-		showerror 'failed to commit'
+		showerror '😕 failed to commit'
 		exit $exit_status
 	fi
 }
@@ -107,7 +107,7 @@ setUpstream() {
 	# showstatus "${branch}'s upstream set to $1/$2"
 	exit_status=$?
 	if [ $exit_status -ne 0 ]; then
-		showerror 'failed to set upstream'
+		showerror '😕 failed to set upstream'
 		exit $exit_status
 	fi
 }
@@ -172,7 +172,7 @@ elif [ -z $status ]; then
 	{ { git push 1>&3; } 2>&1 | tee "$HOME/.custom-commands/tmp/gitp_error" 1>&2; } 3>&1
 	exit_status=$?
 	if [ $exit_status -eq 128 ]; then
-		showerror 'network is down...'
+		showerror '😕 network is down...'
 		exit $exit_status
 	fi
 	retry_cmd=`cat "$HOME/.custom-commands/tmp/gitp_error" | grep 'git push --set-upstream origin'`
