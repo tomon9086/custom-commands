@@ -28,7 +28,7 @@ gitpull() {
 	exit_status=$?
 	if [ $exit_status -ne 0 ]; then
 		showerror '😕 failed to pull.'
-		exit $exit_status
+		# exit $exit_status
 	fi
 }
 
